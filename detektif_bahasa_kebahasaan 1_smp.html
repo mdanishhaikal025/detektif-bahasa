@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detektif Bahasa: Misi Imperatif & Persuasif - Kelas VIII SMP</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins & Fredoka for vibrant educational feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Victory Animations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#6D28D9',
+                            indigo: '#4F46E5',
+                            amber: '#F59E0B',
+                            emerald: '#10B981',
+                            rose: '#F43F5E',
+                            dark: '#0F172A'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Fredoka', 'sans-serif'],
+                        body: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .font-heading { font-family: 'Fredoka', sans-serif; }
+        
+        /* Custom Arcade Effects */
+        .arcade-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.25s ease-in-out;
+        }
+        .arcade-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.3);
+        }
+        .btn-bounce:active { transform: scale(0.95); }
+        .glow-amber { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+        .glow-indigo { box-shadow: 0 0 20px rgba(79, 70, 229, 0.4); }
+
+        /* Blur Reveal Animation */
+        .blur-secret { filter: blur(10px); user-select: none; transition: filter 0.5s ease; }
+        .blur-secret.revealed { filter: blur(0px); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-amber selection:text-brand-dark">
+
+    <!-- TOP NAVIGATION & STATUS BAR -->
+    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <!-- Brand & Title -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchScreen('hub')">
+                <div class="w-11 h-11 bg-gradient-to-tr from-indigo-600 to-amber-500 rounded-2xl flex items-center justify-center text-2xl shadow-lg transform -rotate-6">
+                    🔍
+                </div>
+                <div>
+                    <h1 class="font-heading text-xl md:text-2xl font-bold bg-gradient-to-r from-amber-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">
+                        DETEKTIF BAHASA
+                    </h1>
+                    <p class="text-xs text-slate-400 flex items-center gap-1">
+                        <span>Bahasa Indonesia Kelas VIII</span>
+                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span class="text-emerald-400 font-semibold">SMP</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats & Utility Buttons -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <!-- Single vs Team Mode Badge -->
+                <button onclick="toggleGameMode()" id="mode-toggle-btn" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-amber-300 flex items-center gap-2 transition">
+                    <i class="fa-solid fa-users"></i>
+                    <span id="game-mode-label">Mode Kelompok</span>
+                </button>
+
+                <!-- Audio Toggle -->
+                <button onclick="toggleAudio()" id="audio-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-300 transition" title="Efek Suara">
+                    <i class="fa-solid fa-volume-high text-emerald-400" id="audio-icon"></i>
+                </button>
+
+                <!-- Notebook Handbook -->
+                <button onclick="openNotebook()" class="px-3.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/50 rounded-xl text-xs font-semibold text-indigo-200 flex items-center gap-2 transition glow-indigo">
+                    <i class="fa-solid fa-book-bookmark text-amber-400"></i>
+                    <span>Buku Saku</span>
+                </button>
+
+                <!-- Detective Rank / Score -->
+                <div class="bg-slate-950 px-4 py-1.5 rounded-xl border border-slate-800 flex items-center gap-3">
+                    <div class="text-right">
+                        <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Skor Total</div>
+                        <div class="text-lg font-heading font-bold text-amber-400 leading-none" id="total-score">0</div>
+                    </div>
+                    <div class="text-2xl" id="rank-badge" title="Pangkat Detektif">
+                        🕵️‍♂️
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto w-full p-4 flex-grow flex flex-col justify-center">
+
+        <!-- SCREEN 1: HUB / GAME MODE SELECTOR -->
+        <section id="screen-hub" class="space-y-6 py-4">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-indigo-900/80 via-slate-900 to-purple-900/80 border border-indigo-500/30 rounded-3xl p-6 md:p-8 overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-3 max-w-2xl z-10">
+                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">
+                        Misi Edukasi Interaktif
+                    </span>
+                    <h2 class="font-heading text-2xl md:text-4xl font-bold text-white">
+                        Selesaikan Misi Kasus Kalimat Imperatif & Persuasif!
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base leading-relaxed">
+                        Pilihlah salah satu modus permainan tebak-tebakan di bawah untuk melatih ketelitianmu membedakan pesan dalam <strong class="text-amber-400">Iklan</strong>, <strong class="text-indigo-400">Poster</strong>, dan <strong class="text-emerald-400">Slogan</strong>.
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-2 justify-center md:justify-start">
+                        <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg border border-slate-700">✨ Visual & Kinestetik</span>
+                        <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg border border-slate-700">🏆 Mode Kompetisi Tim</span>
+                        <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg border border-slate-700">💡 Lembar Jawaban Papan Jalan</span>
+                    </div>
+                </div>
+                <div class="relative z-10 shrink-0">
+                    <div class="w-36 h-36 md:w-44 md:h-44 bg-gradient-to-tr from-amber-500 to-indigo-600 rounded-3xl p-1 shadow-2xl transform rotate-3 hover:rotate-0 transition">
+                        <div class="w-full h-full bg-slate-900 rounded-[22px] flex flex-col items-center justify-center p-4 text-center">
+                            <span class="text-5xl mb-2">🔎🏼</span>
+                            <span class="font-heading font-bold text-amber-400 text-sm">Target Misi:</span>
+                            <span class="text-xs text-slate-300">Kuasai 4 Tantangan Utama</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME MODES GRID (The 4 Promoted Concepts) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <!-- Mode 1 Card -->
+                <div onclick="startMode(1)" class="arcade-card p-6 rounded-2xl border border-slate-800 hover:border-indigo-500/50 cursor-pointer flex flex-col justify-between group relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition">
+                                🕵️‍♂️
+                            </div>
+                            <span class="text-xs font-bold text-indigo-400 bg-indigo-950 px-2.5 py-1 rounded-full border border-indigo-800">
+                                Konsep #1
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold text-white group-hover:text-amber-400 transition">
+                            Detektif Bahasa: Lacak Teks
+                        </h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Pecahkan "kasus" kalimat publikasi! Tebakapakah kalimat tersebut tergolong <strong>Imperatif</strong> atau <strong>Persuasif</strong>, lalu tentukan media pasnya (Iklan, Poster, atau Slogan).
+                        </p>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between text-xs font-semibold text-slate-300 border-t border-slate-800/80 pt-3">
+                        <span><i class="fa-solid fa-list-check text-indigo-400 mr-1.5"></i> 5 Kasus Teks</span>
+                        <span class="text-amber-400 group-hover:translate-x-1 transition">Mainkan Misi <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- Mode 2 Card -->
+                <div onclick="startMode(2)" class="arcade-card p-6 rounded-2xl border border-slate-800 hover:border-amber-500/50 cursor-pointer flex flex-col justify-between group relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition">
+                                🖼️
+                            </div>
+                            <span class="text-xs font-bold text-amber-400 bg-amber-950 px-2.5 py-1 rounded-full border border-amber-800">
+                                Konsep #2
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold text-white group-hover:text-amber-400 transition">
+                            Tebak Teks Gambar (Meme & Ad)
+                        </h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Buka sensor rahasia! Tinjau visual poster & iklan yang dikaburkan, baca clue dari detektif, dan tebak kalimat tersembunyi dengan tepat.
+                        </p>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between text-xs font-semibold text-slate-300 border-t border-slate-800/80 pt-3">
+                        <span><i class="fa-solid fa-image text-amber-400 mr-1.5"></i> Misi Visual Pop</span>
+                        <span class="text-amber-400 group-hover:translate-x-1 transition">Mainkan Misi <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- Mode 3 Card -->
+                <div onclick="startMode(3)" class="arcade-card p-6 rounded-2xl border border-slate-800 hover:border-emerald-500/50 cursor-pointer flex flex-col justify-between group relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition">
+                                🧩
+                            </div>
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-800">
+                                Konsep #3
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold text-white group-hover:text-amber-400 transition">
+                            Lengkapi Kalimat Rahasia
+                        </h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Latih keahlian tata bahasamu! Lengkapi kata kunci yang diacak/hilang dengan imbuhan atau kata ajakan pas (seperti <em>-lah, -kan, Yuk, Ayo</em>).
+                        </p>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between text-xs font-semibold text-slate-300 border-t border-slate-800/80 pt-3">
+                        <span><i class="fa-solid fa-puzzle-piece text-emerald-400 mr-1.5"></i> Scramble Words</span>
+                        <span class="text-amber-400 group-hover:translate-x-1 transition">Mainkan Misi <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+
+                <!-- Mode 4 Card -->
+                <div onclick="startMode(4)" class="arcade-card p-6 rounded-2xl border border-slate-800 hover:border-rose-500/50 cursor-pointer flex flex-col justify-between group relative overflow-hidden">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl font-bold group-hover:scale-110 transition">
+                                ⚡
+                            </div>
+                            <span class="text-xs font-bold text-rose-400 bg-rose-950 px-2.5 py-1 rounded-full border border-rose-800">
+                                Konsep #4
+                            </span>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold text-white group-hover:text-amber-400 transition">
+                            Tebak Slogan & Ubah Bentuk
+                        </h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Tantangan Adu Cepat! Tebak jenis slogan populer, lalu lakukan transformasi kilat mengubah kalimat <strong>Persuasif → Imperatif</strong> atau sebaliknya!
+                        </p>
+                    </div>
+                    <div class="mt-5 flex items-center justify-between text-xs font-semibold text-slate-300 border-t border-slate-800/80 pt-3">
+                        <span><i class="fa-solid fa-stopwatch text-rose-400 mr-1.5"></i> Tantangan Kilat (Fast Finger)</span>
+                        <span class="text-amber-400 group-hover:translate-x-1 transition">Mainkan Misi <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Scoreboard Quick View (If Team Mode active) -->
+            <div id="team-scoreboard-panel" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 mt-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-heading text-lg font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list text-amber-400"></i>
+                        <span>Papan Skor Kelompok (Simulasi Papan Jalan)</span>
+                    </h3>
+                    <button onclick="resetTeamScores()" class="text-xs text-slate-400 hover:text-rose-400 transition">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Reset Skor Tim
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center" id="teams-cards-container">
+                    <!-- Dynamic Team Cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: ACTIVE GAMEPLAY SCREEN -->
+        <section id="screen-game" class="hidden space-y-6 py-2">
+            <!-- Game Top Status Bar -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <button onclick="switchScreen('hub')" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 transition text-xs font-semibold flex items-center gap-1.5">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>Menu Utama</span>
+                    </button>
+                    <div id="game-title-badge" class="font-heading text-sm md:text-base font-bold text-amber-400 bg-amber-950/60 border border-amber-800/60 px-3 py-1 rounded-xl">
+                        Misi Game
+                    </div>
+                </div>
+
+                <!-- Progress & Timer -->
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400">Soal:</span>
+                        <span id="question-progress" class="font-heading font-bold text-indigo-400 text-sm">1 / 5</span>
+                    </div>
+                    <div class="w-32 bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800 relative">
+                        <div id="progress-bar" class="bg-gradient-to-r from-indigo-500 to-amber-400 h-full w-1/5 transition-all duration-300"></div>
+                    </div>
+                    <!-- Optional Timer Badge -->
+                    <div id="timer-badge" class="hidden bg-rose-950/80 border border-rose-800 px-3 py-1 rounded-xl text-rose-300 font-mono font-bold text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-clock animate-pulse"></i>
+                        <span id="timer-count">15s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME CARD AREA -->
+            <div id="game-playground" class="arcade-card rounded-3xl p-6 md:p-8 border border-slate-800 space-y-6 min-h-[420px] flex flex-col justify-between">
+                <!-- Content injected dynamically via JS -->
+            </div>
+
+            <!-- Team Answer Submission Assistant (For Kinesthetic Classroom Clipboard gameplay) -->
+            <div id="team-action-bar" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 text-xs text-slate-300">
+                        <span class="p-1.5 bg-amber-500/20 text-amber-400 rounded-lg">📋</span>
+                        <span><strong>Petunjuk Guru:</strong> Minta kelompok menuliskan jawaban di Papan Jalan (Clipboard), lalu angkat tinggi-tinggi sebelum memilih tombol di layar!</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400 font-semibold">Beri Poin Ke:</span>
+                        <select id="team-award-select" class="bg-slate-950 border border-slate-700 text-xs text-amber-300 rounded-lg px-2.5 py-1.5 focus:outline-none">
+                            <option value="all">Siswa / Semua Tim</option>
+                            <option value="0">Tim Merah</option>
+                            <option value="1">Tim Biru</option>
+                            <option value="2">Tim Hijau</option>
+                            <option value="3">Tim Kuning</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL: BUKU SAKU DETEKTIF (LEARNING HANDBOOK) -->
+        <div id="modal-notebook" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-slate-900 border border-indigo-500/40 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 space-y-6 shadow-2xl relative">
+                <button onclick="closeNotebook()" class="absolute top-5 right-5 w-9 h-9 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl">📖</div>
+                    <div>
+                        <h2 class="font-heading text-2xl font-bold text-amber-400">Buku Catatan Detektif Bahasa</h2>
+                        <p class="text-xs text-slate-400">Materi Ringkas Kalimat Imperatif, Persuasif, Iklan, Poster, & Slogan</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <!-- Imperatif vs Persuasif -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <h3 class="font-heading font-bold text-indigo-400 text-base flex items-center gap-2">
+                            <span>⚡ Kalimat Imperatif vs Persuasif</span>
+                        </h3>
+                        <ul class="space-y-1.5 text-xs text-slate-300 list-disc list-inside">
+                            <li><strong class="text-amber-300">Kalimat Imperatif:</strong> Berisi perintah, larangan, atau ajakan keras. Sering menggunakan akhiran <code class="bg-slate-800 px-1 py-0.5 rounded text-rose-300">-lah</code>, <code class="bg-slate-800 px-1 py-0.5 rounded text-rose-300">-kan</code>, atau kata <code class="bg-slate-800 px-1 py-0.5 rounded text-rose-300">Jangan / Dilarang</code>. Contoh: <em>"Jagalah kebersihan kelas kita!"</em></li>
+                            <li><strong class="text-emerald-300">Kalimat Persuasif:</strong> Berisi bujukan, ajakan halus, atau imbauan agar pembaca tertarik/yakin. Sering menggunakan kata <code class="bg-slate-800 px-1 py-0.5 rounded text-emerald-300">Yuk, Ayo, Mari</code> atau manfaat positif. Contoh: <em>"Ayo konsumsi buah setiap hari agar tubuh fit!"</em></li>
+                        </ul>
+                    </div>
+
+                    <!-- Media: Iklan, Poster, Slogan -->
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <h3 class="font-heading font-bold text-amber-400 text-base flex items-center gap-2">
+                            <span>📢 Media Publikasi (Iklan, Poster, Slogan)</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                            <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                                <span class="font-bold text-indigo-300 block mb-1">🛒 IKLAN</span>
+                                Teks promosi produk barang/jasa komersial yang bersifat membujuk khalayak pembeli.
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                                <span class="font-bold text-amber-300 block mb-1">🖼️ POSTER</span>
+                                Plakat paduan gambar & teks menarik yang dipasang di tempat umum untuk edukasi/layanan publik.
+                            </div>
+                            <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                                <span class="font-bold text-emerald-300 block mb-1">✍️ SLOGAN</span>
+                                Kalimat sangat singkat, padat, dan puitis yang menjadi moto atau prinsip dasar organisasi/produk.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button onclick="closeNotebook()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 font-heading font-bold rounded-xl text-white transition shadow-lg">
+                        Saya Paham, Siap Memecahkan Kasus!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: VICTORY & SUMMARY -->
+        <div id="modal-victory" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-slate-900 border border-amber-500/50 rounded-3xl max-w-lg w-full p-6 md:p-8 space-y-6 text-center shadow-2xl relative">
+                <div class="text-6xl animate-bounce">🏆</div>
+                <div class="space-y-2">
+                    <h2 class="font-heading text-3xl font-bold text-amber-400">Misi Selesai!</h2>
+                    <p class="text-sm text-slate-300" id="victory-subtitle">Kamu berhasil memecahkan seluruh teka-teki kasus bahasa!</p>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                    <div class="flex justify-around items-center">
+                        <div>
+                            <span class="text-xs text-slate-400 block">Skor Sesi Ini</span>
+                            <span class="font-heading text-2xl font-bold text-amber-400" id="session-score">+0</span>
+                        </div>
+                        <div class="h-8 w-px bg-slate-800"></div>
+                        <div>
+                            <span class="text-xs text-slate-400 block">Akurasi Jawaban</span>
+                            <span class="font-heading text-2xl font-bold text-emerald-400" id="session-accuracy">100%</span>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-800/80 pt-3 text-xs text-slate-300">
+                        <span>Pangkat Detektif Saat Ini: </span>
+                        <strong class="text-indigo-300 font-heading text-sm" id="victory-rank-name">Detektif Pemula</strong>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="closeVictoryAndHub()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-heading font-bold rounded-xl transition text-sm">
+                        <i class="fa-solid fa-house mr-1.5"></i> Menu Utama
+                    </button>
+                    <button onclick="replayCurrentMode()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-heading font-bold rounded-xl transition text-sm shadow-lg">
+                        <i class="fa-solid fa-rotate-right mr-1.5"></i> Main Lagi
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-center py-3 text-xs text-slate-400 px-4">
+        <p>Game Edukasi Bahasa Indonesia Kelas VIII SMP • Materi Kalimat Imperatif & Persuasif (Iklan, Poster, Slogan)</p>
+    </footer>
+
+    <script>
+        /* ----------------------------------------------------
+           DATA BANK: 4 GAME MODES FOR SMP CLASS 8
+        ---------------------------------------------------- */
+        
+        // MODE 1: Detektif Teks (Identifikasi Imperatif/Persuasif & Media)
+        const MODE1_QUESTIONS = [
+            {
+                text: "Buanglah sampah pada tempatnya demi lingkungan sekolah yang bersih dan sehat!",
+                type: "Imperatif", // Imperatif / Persuasif
+                media: "Poster",  // Iklan / Poster / Slogan
+                explanation: "Kata 'Buanglah' berimbuhan '-lah' menegaskan perintah/ajakan langsung (Imperatif). Dipasang di area sekolah sebagai ajakan kebersihan (Poster).",
+                icon: "🗑️"
+            },
+            {
+                text: "Senyum bersih, harum, dan percaya diri seharian bersama Pasta Gigi FreshDent!",
+                type: "Persuasif",
+                media: "Iklan",
+                explanation: "Teks membujuk calon pembeli dengan menonjolkan manfaat positif produk (Persuasif) untuk komersial (Iklan).",
+                icon: "🪥"
+            },
+            {
+                text: "Tiada hari tanpa prestasi.",
+                type: "Persuasif",
+                media: "Slogan",
+                explanation: "Kalimat sangat singkat, padat, dan memuat visi/prinsip hidup yang menginspirasi (Slogan).",
+                icon: "🏆"
+            },
+            {
+                text: "Belilah produk UMKM lokal agar perekonomian bangsa semakin tangguh!",
+                type: "Imperatif",
+                media: "Iklan",
+                explanation: "Menggunakan kata kerja perintah 'Belilah' (Imperatif) untuk mendorong pembelian barang komersial lokal (Iklan).",
+                icon: "🛍️"
+            },
+            {
+                text: "Dilarang keras merokok di seluruh area perpustakaan!",
+                type: "Imperatif",
+                media: "Poster",
+                explanation: "Penggunaan kata 'Dilarang' menandakan bentuk imperatif larangan tegas yang umum dipasang di papan informasi umum (Poster).",
+                icon: "🚭"
+            }
+        ];
+
+        // MODE 2: Tebak Teks Gambar (Meme & Ad Edition - Visual Clues)
+        const MODE2_QUESTIONS = [
+            {
+                title: "Poster Hutan & Lingkungan",
+                bgGradient: "from-emerald-800 to-slate-900",
+                secretText: "Lestarikanlah hutan kita!",
+                clue: "Kata kerja Imperatif berakhiran -lah tentang menjaga hutan.",
+                options: [
+                    "Lestarikanlah hutan kita!",
+                    "Hutan adalah paru-paru dunia.",
+                    "Ayo jalan-jalan ke hutan pinus!",
+                    "Hutan kita sangat hijau dan luas."
+                ],
+                correctIndex: 0,
+                type: "Imperatif",
+                explanation: "Kata 'Lestarikanlah' mengarahkan perintah aktif (Imperatif) untuk menjaga kelestarian hutan pada poster.",
+                icon: "🌲"
+            },
+            {
+                title: "Iklan Minuman Segar",
+                bgGradient: "from-amber-600 to-rose-900",
+                secretText: "Nikmati kesegaran alami setiap hari!",
+                clue: "Kalimat Persuasif yang mengajak merasakan kesegaran produk.",
+                options: [
+                    "Minuman ini dijual murah meriah.",
+                    "Nikmati kesegaran alami setiap hari!",
+                    "Jangan minum air mineral biasa.",
+                    "Kandungan gula mencapai 10 gram."
+                ],
+                correctIndex: 1,
+                type: "Persuasif",
+                explanation: "Membujuk pembeli lewat rasa segar dan manfaat alami adalah ciri khas kalimat persuasif iklan.",
+                icon: "🍹"
+            },
+            {
+                title: "Slogan Pendidikan SMP",
+                bgGradient: "from-indigo-800 to-purple-950",
+                secretText: "Membaca jendela ilmu, menulis pengikatnya.",
+                clue: "Slogan inspiratif singkat tentang pentingnya membaca & menulis.",
+                options: [
+                    "Buku cerita ini harganya Rp 25.000.",
+                    "Bacalah buku ini sekarang juga!",
+                    "Membaca jendela ilmu, menulis pengikatnya.",
+                    "Dilarang bising di dalam ruang perpustakaan!"
+                ],
+                correctIndex: 2,
+                type: "Persuasif",
+                explanation: "Moto puitis singkat ini adalah Slogan persuasif pengobar semangat belajar.",
+                icon: "📚"
+            }
+        ];
+
+        // MODE 3: Lengkapi Kalimat Rahasia (Word Scramble / Scramble missing keywords)
+        const MODE3_QUESTIONS = [
+            {
+                template: "[KATA] sampah pada tempatnya agar sekolah bebas banjir!",
+                targetType: "Imperatif (Perintah tegas)",
+                missingWord: "Buanglah",
+                wordChoices: ["Buanglah", "Mungkin", "Sangat", "Ayo"],
+                explanation: "Akhiran '-lah' pada kata 'Buanglah' mengubah kata dasar menjadi bentuk imperatif/perintah.",
+                icon: "🧹"
+            },
+            {
+                template: "[KATA] gunakan helm berstandar SNI demi keselamatan berkendara!",
+                targetType: "Persuasif (Ajakan Halus)",
+                missingWord: "Mari",
+                wordChoices: ["Jangan", "Mari", "Dilarang", "Sebab"],
+                explanation: "Kata ajakan 'Mari' membentuk kalimat persuasif halus untuk mengimbau keselamatan.",
+                icon: "🛵"
+            },
+            {
+                template: "[KATA] makanan sehat bergizi agar tubuhmu selalu tangguh!",
+                targetType: "Imperatif (Perintah Ajakan)",
+                missingWord: "Konsumsilah",
+                wordChoices: ["Konsumsilah", "Ayo", "Apakah", "Meningkatkan"],
+                explanation: "Kata 'Konsumsilah' adalah kata kerja berimbuhan -lah yang memberikan instruksi langsung.",
+                icon: "🍎"
+            }
+        ];
+
+        // MODE 4: Tebak Slogan & Ubah Bentuk (Fast Finger Conversion)
+        const MODE4_QUESTIONS = [
+            {
+                originalText: "Indomie, Seleraku!",
+                originalType: "Persuasif / Slogan",
+                promptTask: "Ubah Slogan Persuasif di atas menjadi Kalimat IMPERATIF untuk Poster!",
+                options: [
+                    "Makanlah Indomie saat kamu merasa lapar!",
+                    "Apakah kamu suka makan Indomie lezat?",
+                    "Indomie diproduksi oleh PT Indofood.",
+                    "Semoga Indomie makin terkenal di dunia."
+                ],
+                correctIndex: 0,
+                explanation: "'Makanlah...' menggunakan partikel perintah -lah sehingga berubah bentuk menjadi kalimat Imperatif.",
+                icon: "🍜"
+            },
+            {
+                originalText: "Jagalah kebersihan lingkungan kita!",
+                originalType: "Imperatif / Poster",
+                promptTask: "Ubah Kalimat Imperatif di atas menjadi Kalimat PERSUASIF berdaya bujuk halus!",
+                options: [
+                    "Dilarang membuang sampah sembarangan di jalan!",
+                    "Ayo, bersama-sama kita jaga kebersihan lingkungan agar hidup lebih sehat!",
+                    "Bersihkan selokan rumahmu setiap hari Minggu!",
+                    "Kebersihan sebagian dari iman."
+                ],
+                correctIndex: 1,
+                explanation: "Penggunaan kata ajakan 'Ayo' dan imbauan manfaat 'hidup lebih sehat' membentuk gaya bahasa persuasif.",
+                icon: "🌱"
+            }
+        ];
+
+        /* ----------------------------------------------------
+           GLOBAL GAME STATE
+        ---------------------------------------------------- */
+        let gameState = {
+            totalScore: 0,
+            activeMode: 1, // 1, 2, 3, or 4
+            currentQuestionIndex: 0,
+            sessionScore: 0,
+            correctCount: 0,
+            isTeamMode: false,
+            teams: [
+                { name: "Tim Merah", score: 0, color: "border-rose-500 text-rose-400 bg-rose-950/40" },
+                { name: "Tim Biru", score: 0, color: "border-indigo-500 text-indigo-400 bg-indigo-950/40" },
+                { name: "Tim Hijau", score: 0, color: "border-emerald-500 text-emerald-400 bg-emerald-950/40" },
+                { name: "Tim Kuning", score: 0, color: "border-amber-500 text-amber-400 bg-amber-950/40" }
+            ],
+            audioEnabled: true,
+            timerInterval: null,
+            timeLeft: 15
+        };
+
+        // Web Audio Synthesizer for Retro Game SFX
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSFX(type) {
+            if (!gameState.audioEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.2); // A5
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(160, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'victory') {
+                    // Arpeggio
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.1);
+                        g.gain.setValueAtTime(0.2, now + idx * 0.1);
+                        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.25);
+                        o.start(now + idx * 0.1);
+                        o.stop(now + idx * 0.1 + 0.25);
+                    });
+                }
+            } catch (e) { console.log('Audio error:', e); }
+        }
+
+        /* ----------------------------------------------------
+           NAVIGATION & UI HELPERS
+        ---------------------------------------------------- */
+        function switchScreen(screenName) {
+            playSFX('click');
+            clearInterval(gameState.timerInterval);
+            document.getElementById('screen-hub').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+
+            if (screenName === 'hub') {
+                document.getElementById('screen-hub').classList.remove('hidden');
+                renderTeamCards();
+            } else if (screenName === 'game') {
+                document.getElementById('screen-game').classList.remove('hidden');
+            }
+        }
+
+        function toggleAudio() {
+            gameState.audioEnabled = !gameState.audioEnabled;
+            const icon = document.getElementById('audio-icon');
+            if (gameState.audioEnabled) {
+                icon.className = "fa-solid fa-volume-high text-emerald-400";
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-slate-500";
+            }
+        }
+
+        function toggleGameMode() {
+            playSFX('click');
+            gameState.isTeamMode = !gameState.isTeamMode;
+            const label = document.getElementById('game-mode-label');
+            const teamPanel = document.getElementById('team-scoreboard-panel');
+            const teamActionBar = document.getElementById('team-action-bar');
+
+            if (gameState.isTeamMode) {
+                label.innerText = "Mode Kelompok (Aktif)";
+                label.parentElement.classList.replace('text-amber-300', 'text-emerald-400');
+                teamPanel.classList.remove('hidden');
+                teamActionBar.classList.remove('hidden');
+            } else {
+                label.innerText = "Mode Mandiri";
+                label.parentElement.classList.replace('text-emerald-400', 'text-amber-300');
+                teamPanel.classList.add('hidden');
+                teamActionBar.classList.add('hidden');
+            }
+            renderTeamCards();
+        }
+
+        function renderTeamCards() {
+            const container = document.getElementById('teams-cards-container');
+            container.innerHTML = "";
+            gameState.teams.forEach((team, idx) => {
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border ${team.color} flex flex-col justify-between`;
+                card.innerHTML = `
+                    <span class="text-xs font-bold block">${team.name}</span>
+                    <span class="font-heading text-xl font-bold my-1">${team.score} Pts</span>
+                    <div class="flex gap-1 justify-center mt-1">
+                        <button onclick="adjustTeamScore(${idx}, 10)" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 rounded text-[10px] text-emerald-400 font-bold">+10</button>
+                        <button onclick="adjustTeamScore(${idx}, -5)" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 rounded text-[10px] text-rose-400 font-bold">-5</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function adjustTeamScore(teamIndex, amount) {
+            playSFX('click');
+            gameState.teams[teamIndex].score = Math.max(0, gameState.teams[teamIndex].score + amount);
+            renderTeamCards();
+        }
+
+        function resetTeamScores() {
+            playSFX('click');
+            gameState.teams.forEach(t => t.score = 0);
+            renderTeamCards();
+        }
+
+        function openNotebook() {
+            playSFX('click');
+            document.getElementById('modal-notebook').classList.remove('hidden');
+        }
+        function closeNotebook() {
+            playSFX('click');
+            document.getElementById('modal-notebook').classList.add('hidden');
+        }
+
+        function updateScore(points) {
+            gameState.totalScore += points;
+            gameState.sessionScore += points;
+            document.getElementById('total-score').innerText = gameState.totalScore;
+            updateRankBadge();
+        }
+
+        function updateRankBadge() {
+            const badge = document.getElementById('rank-badge');
+            let rankTitle = "Detektif Pemula";
+            if (gameState.totalScore >= 300) {
+                badge.innerText = "🕵️‍♂️👑";
+                rankTitle = "Master Bahasa SMP";
+            } else if (gameState.totalScore >= 180) {
+                badge.innerText = "🕵️‍♂️⭐";
+                rankTitle = "Detektif Utama";
+            } else if (gameState.totalScore >= 80) {
+                badge.innerText = "🕵️‍♂️🔍";
+                rankTitle = "Detektif Muda";
+            } else {
+                badge.innerText = "🕵️‍♂️";
+            }
+            return rankTitle;
+        }
+
+        /* ----------------------------------------------------
+           GAME LOGIC CONTROLLER
+        ---------------------------------------------------- */
+        function startMode(modeNum) {
+            gameState.activeMode = modeNum;
+            gameState.currentQuestionIndex = 0;
+            gameState.sessionScore = 0;
+            gameState.correctCount = 0;
+            switchScreen('game');
+
+            const titleBadge = document.getElementById('game-title-badge');
+            const timerBadge = document.getElementById('timer-badge');
+            timerBadge.classList.add('hidden');
+
+            if (modeNum === 1) titleBadge.innerText = "Konsep #1: Detektif Teks";
+            else if (modeNum === 2) titleBadge.innerText = "Konsep #2: Tebak Teks Gambar";
+            else if (modeNum === 3) titleBadge.innerText = "Konsep #3: Lengkapi Teks Rahasia";
+            else if (modeNum === 4) {
+                titleBadge.innerText = "Konsep #4: Ubah Bentuk Slogan";
+                timerBadge.classList.remove('hidden');
+            }
+
+            renderCurrentQuestion();
+        }
+
+        function getActiveQuestionsList() {
+            if (gameState.activeMode === 1) return MODE1_QUESTIONS;
+            if (gameState.activeMode === 2) return MODE2_QUESTIONS;
+            if (gameState.activeMode === 3) return MODE3_QUESTIONS;
+            if (gameState.activeMode === 4) return MODE4_QUESTIONS;
+            return [];
+        }
+
+        function renderCurrentQuestion() {
+            clearInterval(gameState.timerInterval);
+            const questions = getActiveQuestionsList();
+            const totalQ = questions.length;
+            const currentQ = questions[gameState.currentQuestionIndex];
+
+            // Progress Bar
+            document.getElementById('question-progress').innerText = `${gameState.currentQuestionIndex + 1} / ${totalQ}`;
+            const pct = ((gameState.currentQuestionIndex + 1) / totalQ) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+
+            const container = document.getElementById('game-playground');
+            container.innerHTML = "";
+
+            // Render Mode Specific Layouts
+            if (gameState.activeMode === 1) {
+                renderMode1UI(container, currentQ);
+            } else if (gameState.activeMode === 2) {
+                renderMode2UI(container, currentQ);
+            } else if (gameState.activeMode === 3) {
+                renderMode3UI(container, currentQ);
+            } else if (gameState.activeMode === 4) {
+                renderMode4UI(container, currentQ);
+                startTimer(15);
+            }
+        }
+
+        function startTimer(seconds) {
+            gameState.timeLeft = seconds;
+            document.getElementById('timer-count').innerText = `${gameState.timeLeft}s`;
+            gameState.timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                document.getElementById('timer-count').innerText = `${gameState.timeLeft}s`;
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    playSFX('wrong');
+                    showFeedback(false, "Waktu Habis! Kamu harus bergerak lebih cepat dalam tantangan ubah bentuk slogan.");
+                }
+            }, 1000);
+        }
+
+        // MODE 1 UI: Dual Tagging (Imperatif/Persuasif + Media)
+        function renderMode1UI(container, q) {
+            let selectedType = null;
+            let selectedMedia = null;
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="text-xs uppercase font-bold text-indigo-400 tracking-wider">Misi Lacak Teks Kasus #${gameState.currentQuestionIndex + 1}</span>
+                        <span class="text-2xl">${q.icon}</span>
+                    </div>
+
+                    <!-- Teks Kasus -->
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-indigo-500/30 text-center space-y-2">
+                        <p class="text-xs text-slate-400 font-semibold uppercase">Potongan Teks Kasus Detektif:</p>
+                        <h3 class="font-heading text-xl md:text-2xl font-bold text-amber-300 italic">
+                            "${q.text}"
+                        </h3>
+                    </div>
+
+                    <!-- Dual Option Selectors -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <!-- Step 1: Jenis Kalimat -->
+                        <div class="space-y-2 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                            <label class="text-xs font-bold text-slate-300 block">
+                                <span class="text-amber-400 mr-1">Tebakan 1:</span> Jenis Kalimat?
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="selectM1Tag('type', 'Imperatif', this)" class="m1-type-btn p-3 bg-slate-950 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs font-bold text-slate-300 transition">
+                                    ⚡ Imperatif
+                                </button>
+                                <button onclick="selectM1Tag('type', 'Persuasif', this)" class="m1-type-btn p-3 bg-slate-950 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs font-bold text-slate-300 transition">
+                                    💡 Persuasif
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Cocok Dipasang Di -->
+                        <div class="space-y-2 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                            <label class="text-xs font-bold text-slate-300 block">
+                                <span class="text-amber-400 mr-1">Tebakan 2:</span> Media Paling Cocok?
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="selectM1Tag('media', 'Iklan', this)" class="m1-media-btn p-3 bg-slate-950 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs font-bold text-slate-300 transition">
+                                    🛒 Iklan
+                                </button>
+                                <button onclick="selectM1Tag('media', 'Poster', this)" class="m1-media-btn p-3 bg-slate-950 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs font-bold text-slate-300 transition">
+                                    🖼️ Poster
+                                </button>
+                                <button onclick="selectM1Tag('media', 'Slogan', this)" class="m1-media-btn p-3 bg-slate-950 hover:bg-indigo-950 border border-slate-800 rounded-xl text-xs font-bold text-slate-300 transition">
+                                    ✍️ Slogan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end">
+                    <button id="m1-submit-btn" disabled onclick="checkMode1Answer()" class="px-6 py-3 bg-slate-800 text-slate-500 font-heading font-bold rounded-xl transition opacity-50 cursor-not-allowed">
+                        Kirim Jawaban Kasus <i class="fa-solid fa-paper-plane ml-1.5"></i>
+                    </button>
+                </div>
+            `;
+
+            window.m1State = { type: null, media: null };
+        }
+
+        function selectM1Tag(category, value, btn) {
+            playSFX('click');
+            if (category === 'type') {
+                window.m1State.type = value;
+                document.querySelectorAll('.m1-type-btn').forEach(b => {
+                    b.classList.remove('border-amber-400', 'bg-indigo-900/60', 'text-amber-300');
+                });
+                btn.classList.add('border-amber-400', 'bg-indigo-900/60', 'text-amber-300');
+            } else {
+                window.m1State.media = value;
+                document.querySelectorAll('.m1-media-btn').forEach(b => {
+                    b.classList.remove('border-amber-400', 'bg-indigo-900/60', 'text-amber-300');
+                });
+                btn.classList.add('border-amber-400', 'bg-indigo-900/60', 'text-amber-300');
+            }
+
+            const submitBtn = document.getElementById('m1-submit-btn');
+            if (window.m1State.type && window.m1State.media) {
+                submitBtn.disabled = false;
+                submitBtn.className = "px-6 py-3 bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 font-heading font-bold rounded-xl text-slate-950 shadow-lg cursor-pointer transition glow-amber";
+            }
+        }
+
+        function checkMode1Answer() {
+            const q = MODE1_QUESTIONS[gameState.currentQuestionIndex];
+            const isCorrect = (window.m1State.type === q.type) && (window.m1State.media === q.media);
+            awardSelectedTeamOrUser(isCorrect ? 30 : 0);
+            showFeedback(isCorrect, q.explanation);
+        }
+
+        // MODE 2 UI: Tebak Teks Gambar (Blur Reveal Clue)
+        function renderMode2UI(container, q) {
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="text-xs uppercase font-bold text-amber-400 tracking-wider">Misi Tebak Teks Gambar #${gameState.currentQuestionIndex + 1}</span>
+                        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full">${q.title}</span>
+                    </div>
+
+                    <!-- Simulated Visual Ad Banner with Blurred Text -->
+                    <div class="relative bg-gradient-to-r ${q.bgGradient} rounded-2xl p-6 text-center shadow-inner overflow-hidden border border-slate-700 space-y-3 min-h-[160px] flex flex-col items-center justify-center">
+                        <div class="text-4xl mb-1">${q.icon}</div>
+                        <div id="blurred-secret-banner" class="blur-secret font-heading text-xl md:text-2xl font-bold text-amber-300 bg-slate-950/70 px-4 py-2 rounded-xl border border-amber-400/40">
+                            ${q.secretText}
+                        </div>
+                        <p class="text-xs text-slate-200 bg-slate-900/60 px-3 py-1 rounded-full">
+                            💡 <strong>Clue Detektif:</strong> ${q.clue}
+                        </p>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="checkMode2Answer(${idx})" class="p-4 bg-slate-950 hover:bg-indigo-950 border border-slate-800 hover:border-amber-400 rounded-2xl text-left text-xs font-semibold text-slate-200 transition flex items-start gap-3 group">
+                                <span class="w-6 h-6 rounded-lg bg-slate-800 group-hover:bg-amber-500 group-hover:text-slate-950 flex items-center justify-center font-bold text-xs shrink-0">
+                                    ${String.fromCharCode(65 + idx)}
+                                </span>
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkMode2Answer(chosenIdx) {
+            const q = MODE2_QUESTIONS[gameState.currentQuestionIndex];
+            const isCorrect = chosenIdx === q.correctIndex;
+            
+            // Reveal blurred text on image
+            const secretBanner = document.getElementById('blurred-secret-banner');
+            if (secretBanner) secretBanner.classList.add('revealed');
+
+            awardSelectedTeamOrUser(isCorrect ? 25 : 0);
+            setTimeout(() => {
+                showFeedback(isCorrect, q.explanation);
+            }, 600);
+        }
+
+        // MODE 3 UI: Lengkapi Kalimat Rahasia (Word Scramble)
+        function renderMode3UI(container, q) {
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Misi Lengkapi Kalimat #${gameState.currentQuestionIndex + 1}</span>
+                        <span class="text-xs bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-1 rounded-full">Target: ${q.targetType}</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-6 rounded-2xl border border-emerald-500/30 text-center space-y-3">
+                        <span class="text-4xl block">${q.icon}</span>
+                        <p class="font-heading text-lg md:text-xl font-bold text-slate-200">
+                            ${q.template.replace('[KATA]', '<span id="missing-slot" class="text-amber-400 border-b-2 border-amber-400 px-3 py-1 font-mono">______</span>')}
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-slate-400 block text-center">Pilih Kata Rahasia yang Tepat:</label>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            ${q.wordChoices.map((word) => `
+                                <button onclick="checkMode3Answer('${word}')" class="px-5 py-3 bg-slate-950 hover:bg-emerald-900 border border-slate-800 hover:border-emerald-400 rounded-xl font-heading font-bold text-sm text-emerald-300 transition shadow-md">
+                                    ✨ ${word}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkMode3Answer(chosenWord) {
+            const q = MODE3_QUESTIONS[gameState.currentQuestionIndex];
+            const slot = document.getElementById('missing-slot');
+            if (slot) slot.innerText = chosenWord;
+
+            const isCorrect = chosenWord === q.missingWord;
+            awardSelectedTeamOrUser(isCorrect ? 25 : 0);
+            setTimeout(() => {
+                showFeedback(isCorrect, q.explanation);
+            }, 500);
+        }
+
+        // MODE 4 UI: Fast Finger Slogan Transformation
+        function renderMode4UI(container, q) {
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <span class="text-xs uppercase font-bold text-rose-400 tracking-wider">Tantangan Ubah Bentuk #${gameState.currentQuestionIndex + 1}</span>
+                        <span class="text-xs bg-rose-950 text-rose-300 border border-rose-800 px-2.5 py-1 rounded-full font-bold animate-pulse">⚡ Mode Cepat</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-5 rounded-2xl border border-rose-500/30 space-y-2 text-center">
+                        <span class="text-xs text-slate-400 font-semibold">Teks Asal:</span>
+                        <h3 class="font-heading text-xl font-bold text-amber-300">"${q.originalText}"</h3>
+                        <span class="inline-block text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">${q.originalType}</span>
+                    </div>
+
+                    <div class="p-3 bg-indigo-950/60 border border-indigo-500/40 rounded-xl text-center">
+                        <p class="text-xs font-bold text-indigo-200">
+                            🎯 <strong>Tantangan Poin Bonus:</strong> ${q.promptTask}
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="checkMode4Answer(${idx})" class="p-3.5 bg-slate-950 hover:bg-rose-950 border border-slate-800 hover:border-rose-400 rounded-xl text-left text-xs font-semibold text-slate-200 transition flex items-start gap-2.5">
+                                <span class="w-5 h-5 rounded bg-slate-800 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkMode4Answer(chosenIdx) {
+            clearInterval(gameState.timerInterval);
+            const q = MODE4_QUESTIONS[gameState.currentQuestionIndex];
+            const isCorrect = chosenIdx === q.correctIndex;
+            awardSelectedTeamOrUser(isCorrect ? 35 : 0);
+            showFeedback(isCorrect, q.explanation);
+        }
+
+        function awardSelectedTeamOrUser(points) {
+            if (points <= 0) return;
+            const select = document.getElementById('team-award-select');
+            const teamVal = select.value;
+
+            if (gameState.isTeamMode && teamVal !== 'all') {
+                const idx = parseInt(teamVal);
+                if (!isNaN(idx) && gameState.teams[idx]) {
+                    gameState.teams[idx].score += points;
+                    renderTeamCards();
+                }
+            } else if (gameState.isTeamMode && teamVal === 'all') {
+                gameState.teams.forEach(t => t.score += points);
+                renderTeamCards();
+            }
+
+            updateScore(points);
+        }
+
+        /* ----------------------------------------------------
+           FEEDBACK & GAME PROGRESSION
+        ---------------------------------------------------- */
+        function showFeedback(isCorrect, explanationText) {
+            if (isCorrect) {
+                playSFX('correct');
+                gameState.correctCount++;
+            } else {
+                playSFX('wrong');
+            }
+
+            const container = document.getElementById('game-playground');
+            const feedbackOverlay = document.createElement('div');
+            feedbackOverlay.className = `p-6 rounded-2xl border ${isCorrect ? 'bg-emerald-950/90 border-emerald-500' : 'bg-rose-950/90 border-rose-500'} text-center space-y-4 animate-fadeIn`;
+            
+            feedbackOverlay.innerHTML = `
+                <div class="text-4xl">${isCorrect ? '🎉' : '❌'}</div>
+                <h3 class="font-heading text-2xl font-bold ${isCorrect ? 'text-emerald-300' : 'text-rose-300'}">
+                    ${isCorrect ? 'Analisis Detektif Tepat!' : 'Tebakan Kurang Tepat!'}
+                </h3>
+                <p class="text-xs md:text-sm text-slate-200 max-w-lg mx-auto leading-relaxed bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                    <strong>Penjelasan Materi:</strong> ${explanationText}
+                </p>
+                <div class="pt-2">
+                    <button onclick="nextQuestion()" class="px-6 py-2.5 ${isCorrect ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-200'} font-heading font-bold rounded-xl hover:scale-105 transition shadow-lg">
+                        Soal Berikutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(feedbackOverlay);
+        }
+
+        function nextQuestion() {
+            playSFX('click');
+            const questions = getActiveQuestionsList();
+            if (gameState.currentQuestionIndex + 1 < questions.length) {
+                gameState.currentQuestionIndex++;
+                renderCurrentQuestion();
+            } else {
+                showVictoryModal();
+            }
+        }
+
+        function showVictoryModal() {
+            playSFX('victory');
+            // Confetti Trigger
+            try {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } catch (e) {}
+
+            const totalQ = getActiveQuestionsList().length;
+            const accuracyPct = Math.round((gameState.correctCount / totalQ) * 100);
+
+            document.getElementById('session-score').innerText = `+${gameState.sessionScore}`;
+            document.getElementById('session-accuracy').innerText = `${accuracyPct}%`;
+            document.getElementById('victory-rank-name').innerText = updateRankBadge();
+
+            document.getElementById('modal-victory').classList.remove('hidden');
+        }
+
+        function closeVictoryAndHub() {
+            playSFX('click');
+            document.getElementById('modal-victory').classList.add('hidden');
+            switchScreen('hub');
+        }
+
+        function replayCurrentMode() {
+            playSFX('click');
+            document.getElementById('modal-victory').classList.add('hidden');
+            startMode(gameState.activeMode);
+        }
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTeamCards();
+        });
+    </script>
+</body>
+</html>
